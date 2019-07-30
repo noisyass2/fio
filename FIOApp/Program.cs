@@ -1,6 +1,7 @@
 ﻿using System;
 using FIOCore;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace FIOApp
 {
@@ -27,14 +28,23 @@ namespace FIOApp
                     case ConsoleKey.D2:
                     case ConsoleKey.D3:
                     case ConsoleKey.D4:
-                    case ConsoleKey.D5:
                         // Console.WriteLine(key.Key.ToString().Replace("D",""));
-                        app.SwitchTab( Int16.Parse(key.Key.ToString().Replace("D","")));
-                        Console.WriteLine(app.SelectedEType);
+                        app.SwitchTab( Int16.Parse(key.Key.ToString().Replace("D","")));                        
+                        break;
+                    case ConsoleKey.Q:
+                        app.SwitchTab(5);                        
+                        break;
+                    case ConsoleKey.W:
+                        app.SwitchTab(6);                        
+                        break;
+                    case ConsoleKey.E:
+                        app.SwitchTab(7);                        
+                        break;
+                    case ConsoleKey.R:
+                        app.SwitchTab(8);                        
                         break;
                     case ConsoleKey.A:
-                        app.AddToQueue(app.SelectedEType,1);
-                        
+                        app.AddToQueue(app.SelectedEType,1);                        
                         break;
                     case ConsoleKey.D:
                         app.AddProduction(app.SelectedEType,1);
@@ -53,8 +63,9 @@ namespace FIOApp
             Console.Clear();
             Console.WriteLine("TAB: " + app.SelectedEType);
             Console.WriteLine(app.Inventory.ToString());
-            Console.WriteLine("%:" + app.QueueProgress);
+            Console.WriteLine("%:" + app.QueueProgress + " | " + String.Join("<",app.CQueue.Select(p => p.Etype)));
             Console.WriteLine("MC : " + app.Inventory.MinCraftable);
+            Console.WriteLine("" + app.LastKnownMessage);
         };
     }
 }

@@ -12,11 +12,15 @@ namespace FIOCore
         public Inventory()
         {
             this.Items = new List<Item>(){
-                new Item(Etype.Stone, 0,0),
-                new Item(Etype.Iron, 0,0),
-                new Item(Etype.Coal, 0,0),
-                new Item(Etype.Copper, 0,0),
-                new Item(Etype.IronIngot,0,0, new Recipe() { Requirements = new List<Item>() { new Item(Etype.Iron, 1)} })
+                new Item(Etype.Stone, 0,0,null,Etype.Drill),
+                new Item(Etype.Iron, 0,0,null,Etype.Drill),
+                new Item(Etype.Coal, 0,0,null,Etype.Drill),
+                new Item(Etype.Copper, 0,0,null,Etype.Drill),
+                new Item(Etype.IronIngot,0,0, new Recipe() { Requirements = new List<Item>() { new Item(Etype.Iron, 1)} },Etype.Smelter),
+                new Item(Etype.CopperIngot,0,0, new Recipe() { Requirements = new List<Item>() { new Item(Etype.Copper, 1)} },Etype.Smelter),
+                new Item(Etype.Drill, 0,0,new Recipe() { Requirements = new List<Item>() { new Item(Etype.IronIngot, 5)} },Etype.Constructor),                                
+                new Item(Etype.Smelter, 0,0,new Recipe() { Requirements = new List<Item>() { new Item(Etype.IronIngot, 5), new Item(Etype.CopperIngot, 5) }},Etype.Constructor),
+                new Item(Etype.Constructor, 0,0,new Recipe() { Requirements = new List<Item>() { new Item(Etype.IronIngot, 10), new Item(Etype.CopperIngot, 10)} },Etype.Constructor2),
             };
         }
         public void Add(Etype item, int cnt)
@@ -27,7 +31,7 @@ namespace FIOCore
         
         public override string ToString()
         {
-            return String.Join(",",this.Items.Select(p => p.ToString()));
+            return String.Join(Environment.NewLine,this.Items.Select(p => p.ToString()));
         }
 
         public void Craft(Etype etype, int amt)
@@ -67,34 +71,4 @@ namespace FIOCore
         }
     }
 
-    public class Item
-    {
-        public FIOCore.Etype Etype { get; set; }
-        public int Amount { get; set; }
-        public int Production { get; set; }
-        public int Progress { get; set; }
-        public Recipe Recipe { get; set; }
-
-        public Item(FIOCore.Etype etype, int amt, int prod) : this(etype,  amt,  prod, null) {}
-
-        public Item(FIOCore.Etype etype, int amt) : this(etype,amt,0,null) {}
-
-        public Item(FIOCore.Etype etype, int amt, int prod, Recipe recipe) 
-        {
-            this.Etype = etype;
-            this.Amount = amt;
-            this.Production = prod;    
-            this.Recipe = recipe;        
-        }
-        public override string ToString() => this.Etype.ToString() + ":" + this.Amount.ToString() + "[" + this.Production.ToString() + "]";
-
-        
-    }
-
-    public class Recipe
-    {
-        public List<Item> Requirements { get; set; }
-
-    }
-   
 }

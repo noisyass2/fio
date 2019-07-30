@@ -5,6 +5,9 @@ namespace FIOCore
     public enum Etype
     {
         Iron,Copper,Coal,Stone,
-        IronIngot,CopperIngot
+        IronIngot,CopperIngot,
+
+        //Machines
+        Drill,Smelter,Constructor, Constructor2
     }
 }

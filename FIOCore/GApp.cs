@@ -18,6 +18,8 @@ namespace FIOCore
         
         public Etype SelectedEType { get; private set; }
 
+        public String LastKnownMessage { get; set; }
+
         Timer apptimer = null;
         AutoResetEvent are = null;
         int interval = 100;
@@ -27,7 +29,7 @@ namespace FIOCore
         public GApp()
         {
             are = new AutoResetEvent(false);
-            this.Etypes = new List<Etype>(){ Etype.Stone, Etype.Iron, Etype.Coal, Etype.Copper, Etype.IronIngot };
+            this.Etypes = new List<Etype>(){  Etype.Iron, Etype.Coal, Etype.Copper, Etype.IronIngot,Etype.CopperIngot, Etype.Drill, Etype.Smelter, Etype.Constructor };
             this.Inventory = new Inventory();
             this.CQueue = new List<Item>();
             apptimer = new Timer(Update,are,interval,interval);            
@@ -59,7 +61,7 @@ namespace FIOCore
             {
                 if(item.Production > 0)
                 {
-                    item.Progress += 10;
+                    item.Progress += item.Speed;
                     if(item.Progress >= 100)
                     {
                         this.Inventory.Craft(item.Etype,item.Production);
@@ -76,6 +78,18 @@ namespace FIOCore
 
         public void AddToQueue(Etype etype, int cnt) => this.CQueue.Add(new Item(etype, cnt, 0));
 
-        public void AddProduction(Etype etype, int prod) => this.Inventory.Items.FirstOrDefault(p => p.Etype == etype).Production += 1;
+        public void AddProduction(Etype etype, int prod)
+        {
+            GApp gApp = this;
+            var item = gApp.Inventory.Items.FirstOrDefault(p => p.Etype == etype);
+            var requiredMachine = gApp.Inventory.Items.FirstOrDefault(p => p.Etype == item.Machine);
+            if(requiredMachine != null && (prod > 0 ? requiredMachine.Amount > 0 : item.Production > 0))
+            {
+                item.Production += prod;
+                requiredMachine.Amount -= prod;
+            }else{
+                this.LastKnownMessage = "Missing " + item.Machine;
+            }
+        }
     }
 }
